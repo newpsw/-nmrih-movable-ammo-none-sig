@@ -147,7 +147,7 @@ public void OnEntityDestroyed(int entity)
 						{
 							FormatEx(Tcode, sizeof(Tcode), "SetAmmoType(\"ammobox_22lr\")");
 						}
-						else if(StrContains(amodel, "556") > -1 || StrContains(amodel, "m16a4") > -1)
+						else if(StrContains(amodel, "556") > -1 || StrContains(amodel, "m16") > -1)
 						{
 							FormatEx(Tcode, sizeof(Tcode), "SetAmmoType(\"ammobox_556\")");
 						}
