@@ -5,5 +5,3 @@ Reference link :
 https://forums.alliedmods.net/showthread.php?t=340795
 
 [![Watch the video](https://img.youtube.com/vi/z7KZyT8aGQU/0.jpg)](https://www.youtube.com/watch?v=z7KZyT8aGQU)
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/" frameborder="0" allowfullscreen></iframe>
