@@ -7,7 +7,7 @@ public Plugin myinfo =
 	name        = "Movable Ammo",
 	author      = "Dysphie & newpsw",
 	description = "Allows ammo to be transported when it doesn't fit in a player's inventory",
-	version     = "1.0.1",
+	version     = "1.0.2",
 	url         = "https://github.com/dysphie/nmrih-movable-ammo"
 };
 
