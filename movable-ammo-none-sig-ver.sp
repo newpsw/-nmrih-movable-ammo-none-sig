@@ -53,7 +53,7 @@ void GetAttachedEntity(int pickup_ref)
 		if(!(0 < GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity") <= MaxClients))
 		{
 			GetEntPropString(entity, Prop_Data, "m_ModelName", alias, sizeof(alias));
-			if(StrContains(alias, "ammo_") > -1 || StrContains(alias, "barricadeboard") > -1 || StrContains(alias, "mag") > -1)
+			if(StrContains(alias, "vscript/") != -1 || StrContains(alias, "ammo/") != -1)
 			{
 				SetEntPropEnt(pickup, Prop_Data, "m_hOwnerEntity", entity);
 				SetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", client);
@@ -66,8 +66,12 @@ Action OnAmmoBoxUse(int ammobox, int activator, int caller, UseType type, float 
 {
 	if (!(0 < caller <= MaxClients) || !IsValidEntity(ammobox))
 		return Plugin_Continue;
-	
-	if(!IsPlayerAlive(caller))
+	char amodel[32];
+	GetEntPropString(ammobox, Prop_Data, "m_ModelName", amodel, sizeof(amodel));
+	if(StrContains(amodel, "vscript/") < 0 && StrContains(amodel, "ammo/") < 0)
+		return Plugin_Continue;
+
+	if(!IsClientConnected(activator) || IsFakeClient(activator) || !IsPlayerAlive(activator) && GetEntProp(activator, Prop_Send, "m_iPlayerState") != 0)
 		return Plugin_Continue;
 	
 	if(RunEntVScriptBool(caller, "HasLeftoverWeight(1)"))
@@ -98,7 +102,7 @@ Action OnAmmoBoxUse(int ammobox, int activator, int caller, UseType type, float 
 		AcceptEntityInput(ammobox, "FireUser1");
 		AcceptEntityInput(entity, "use", caller);
 	}
-	return Plugin_Handled;
+	return Plugin_Continue;
 }
 
 public void OnEntityDestroyed(int entity)
@@ -134,61 +138,70 @@ public void OnEntityDestroyed(int entity)
 						if (StrContains(amodel, "9mm") > -1 || StrContains(amodel, "glock17") > -1 || StrContains(amodel, "mp5") > -1 || StrContains(amodel, "m92fs") > -1)
 						{
 							FormatEx(Tcode, sizeof(Tcode), "SetAmmoType(\"ammobox_9mm\")");
+							RunEntVScript(ammo_spawner, Tcode);
 						}
 						else if(StrContains(amodel, "45acp") > -1 || StrContains(amodel, "1911") > -1 || StrContains(amodel, "mac10") > -1)
 						{
 							FormatEx(Tcode, sizeof(Tcode), "SetAmmoType(\"ammobox_45acp\")");
+							RunEntVScript(ammo_spawner, Tcode);
 						}
 						else if(StrContains(amodel, "357") > -1)
 						{
 							FormatEx(Tcode, sizeof(Tcode), "SetAmmoType(\"ammobox_357\")");
+							RunEntVScript(ammo_spawner, Tcode);
 						}
 						else if(StrContains(amodel, "22lr") > -1 || StrContains(amodel, "mkiii") > -1 || StrContains(amodel, "1022") > -1)
 						{
 							FormatEx(Tcode, sizeof(Tcode), "SetAmmoType(\"ammobox_22lr\")");
+							RunEntVScript(ammo_spawner, Tcode);
 						}
 						else if(StrContains(amodel, "556") > -1 || StrContains(amodel, "m16") > -1)
 						{
 							FormatEx(Tcode, sizeof(Tcode), "SetAmmoType(\"ammobox_556\")");
+							RunEntVScript(ammo_spawner, Tcode);
 						}
 						else if(StrContains(amodel, "762") > -1 || StrContains(amodel, "cz858") > -1 || StrContains(amodel, "sks") > -1)
 						{
 							FormatEx(Tcode, sizeof(Tcode), "SetAmmoType(\"ammobox_762mm\")");
+							RunEntVScript(ammo_spawner, Tcode);
 						}
 						else if(StrContains(amodel, "308") > -1 || StrContains(amodel, "fnfal") > -1 || StrContains(amodel, "sako85") > -1 || StrContains(amodel, "jae700") > -1)
 						{
 							FormatEx(Tcode, sizeof(Tcode), "SetAmmoType(\"ammobox_308\")");
+							RunEntVScript(ammo_spawner, Tcode);
 						}
 						else if(StrContains(amodel, "12g") > -1)
 						{
 							FormatEx(Tcode, sizeof(Tcode), "SetAmmoType(\"ammobox_12gauge\")");
+							RunEntVScript(ammo_spawner, Tcode);
 						}
 						else if(StrContains(amodel, "arrow_box") > -1)
 						{
 							FormatEx(Tcode, sizeof(Tcode), "SetAmmoType(\"ammobox_arrow\")");
+							RunEntVScript(ammo_spawner, Tcode);
 						}
 						else if(StrContains(amodel, "gascan") > -1)
 						{
 							FormatEx(Tcode, sizeof(Tcode), "SetAmmoType(\"ammobox_fuel\")");
+							RunEntVScript(ammo_spawner, Tcode);
 						}
 						else if(StrContains(amodel, "barricadeboard") > -1)
 						{
 							FormatEx(Tcode, sizeof(Tcode), "SetAmmoType(\"ammobox_board\")");
+							RunEntVScript(ammo_spawner, Tcode);
 						}
 						else if(StrContains(amodel, "flares") > -1)
 						{
 							FormatEx(Tcode, sizeof(Tcode), "SetAmmoType(\"ammobox_flare\")");
+							RunEntVScript(ammo_spawner, Tcode);
 						}
 						char Ncode[24];
 						FormatEx(Ncode, sizeof(Ncode), "SetAmmoCount(%d)", Cammoinfo[client]);
-						RunEntVScript(ammo_spawner, Tcode);
 						RunEntVScript(ammo_spawner, Ncode);
 						SetEntityModel(ammo_spawner, amodel);
 						
 						TeleportEntity(ammo_spawner, vOrigin, vAngeles, NULL_VECTOR);
-						SetVariantString("OnUser1 !self:Kill::0.0:1");
-						AcceptEntityInput(dweapon, "AddOutput");
-						AcceptEntityInput(dweapon, "FireUser1");
+						RemoveEntity(dweapon);
 					}
 				}
 			}
